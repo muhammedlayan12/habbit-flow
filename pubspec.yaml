@@ -1,0 +1,45 @@
+name: habitflow
+description: "HabitFlow — Build better days, one habit at a time."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+
+  # State management
+  provider: ^6.1.2
+
+  # Backend
+  supabase_flutter: ^2.5.6
+  flutter_dotenv: ^5.1.0
+
+  # Fonts / UI
+  google_fonts: ^6.2.1
+
+  # Notifications
+  flutter_local_notifications: ^17.2.2
+  timezone: ^0.9.4
+
+  # Charts
+  fl_chart: ^0.68.0
+
+  # Misc
+  intl: ^0.19.0
+  url_launcher: ^6.3.0
+  table_calendar: ^3.1.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - .env
+
