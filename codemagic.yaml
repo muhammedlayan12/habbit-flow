@@ -14,10 +14,8 @@ workflows:
         script: |
           python3 - <<'PY'
           import os
-
           kts_path = "android/app/build.gradle.kts"
           groovy_path = "android/app/build.gradle"
-
           if os.path.exists(kts_path):
               path = kts_path
               is_kts = True
@@ -26,10 +24,8 @@ workflows:
               is_kts = False
           else:
               raise SystemExit("No app build.gradle found")
-
           with open(path) as f:
               content = f.read()
-
           if "coreLibraryDesugaring" not in content:
               if is_kts:
                   content = content.replace(
@@ -59,7 +55,6 @@ workflows:
                       )
                   else:
                       content += "\ndependencies {\n    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'\n}\n"
-
               with open(path, "w") as f:
                   f.write(content)
               print("Patched", path)
@@ -68,7 +63,7 @@ workflows:
           PY
       - name: Get Flutter packages
         script: flutter pub get
-      - name: Build release APK
-        script: flutter build apk --release
+      - name: Build release APK (split per architecture for smaller size)
+        script: flutter build apk --release --split-per-abi
     artifacts:
       - build/**/outputs/**/*.apk
