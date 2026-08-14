@@ -10,6 +10,62 @@ workflows:
           if [ ! -d android ]; then
             flutter create . --platforms=android
           fi
+      - name: Enable core library desugaring (required by flutter_local_notifications)
+        script: |
+          python3 - <<'PY'
+          import os
+
+          kts_path = "android/app/build.gradle.kts"
+          groovy_path = "android/app/build.gradle"
+
+          if os.path.exists(kts_path):
+              path = kts_path
+              is_kts = True
+          elif os.path.exists(groovy_path):
+              path = groovy_path
+              is_kts = False
+          else:
+              raise SystemExit("No app build.gradle found")
+
+          with open(path) as f:
+              content = f.read()
+
+          if "coreLibraryDesugaring" not in content:
+              if is_kts:
+                  content = content.replace(
+                      "compileOptions {",
+                      "compileOptions {\n        isCoreLibraryDesugaringEnabled = true",
+                      1,
+                  )
+                  if "dependencies {" in content:
+                      content = content.replace(
+                          "dependencies {",
+                          "dependencies {\n    coreLibraryDesugaring(\"com.android.tools:desugar_jdk_libs:2.1.4\")",
+                          1,
+                      )
+                  else:
+                      content += '\ndependencies {\n    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")\n}\n'
+              else:
+                  content = content.replace(
+                      "compileOptions {",
+                      "compileOptions {\n        coreLibraryDesugaringEnabled true",
+                      1,
+                  )
+                  if "dependencies {" in content:
+                      content = content.replace(
+                          "dependencies {",
+                          "dependencies {\n    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'",
+                          1,
+                      )
+                  else:
+                      content += "\ndependencies {\n    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'\n}\n"
+
+              with open(path, "w") as f:
+                  f.write(content)
+              print("Patched", path)
+          else:
+              print("Already patched:", path)
+          PY
       - name: Get Flutter packages
         script: flutter pub get
       - name: Build release APK
