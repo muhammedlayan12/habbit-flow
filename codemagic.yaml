@@ -10,6 +10,23 @@ workflows:
           if [ ! -d android ]; then
             flutter create . --platforms=android
           fi
+      - name: Add internet permission for release builds
+        script: |
+          python3 - <<'PY'
+          path = "android/app/src/main/AndroidManifest.xml"
+          with open(path) as f:
+              content = f.read()
+          permission = '    <uses-permission android:name="android.permission.INTERNET"/>\n'
+          if "android.permission.INTERNET" not in content:
+              marker = "<manifest"
+              idx = content.index(">", content.index(marker)) + 1
+              content = content[:idx] + "\n" + permission + content[idx:]
+              with open(path, "w") as f:
+                  f.write(content)
+              print("Added INTERNET permission")
+          else:
+              print("INTERNET permission already present")
+          PY
       - name: Enable core library desugaring (required by flutter_local_notifications)
         script: |
           python3 - <<'PY'
