@@ -28,7 +28,7 @@ class _CreateHabitScreenState extends State<CreateHabitScreen> {
   late HabitFrequencyType _frequencyType = widget.existing?.frequency.type ?? HabitFrequencyType.daily;
   late List<int> _customDays = List<int>.from(widget.existing?.frequency.customDays ?? []);
   late bool _reminderEnabled = widget.existing?.reminderEnabled ?? false;
-  TimeOfDay? _reminderTime = widget.existing?.reminderHour != null
+  late TimeOfDay? _reminderTime = widget.existing?.reminderHour != null
       ? TimeOfDay(hour: widget.existing!.reminderHour!, minute: widget.existing!.reminderMinute!)
       : const TimeOfDay(hour: 8, minute: 0);
   late DateTime _startDate = widget.existing?.startDate ?? DateTime.now();

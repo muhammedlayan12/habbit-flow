@@ -22,8 +22,8 @@ class _CreateTaskScreenState extends State<CreateTaskScreen> {
   late final _description = TextEditingController(text: widget.existing?.description ?? '');
   late final _category = TextEditingController(text: widget.existing?.category ?? 'General');
   late TaskPriority _priority = widget.existing?.priority ?? TaskPriority.medium;
-  DateTime? _dueDate = widget.existing?.dueDate ?? DateTime.now();
-  TimeOfDay? _dueTime = widget.existing?.dueHour != null
+  late DateTime? _dueDate = widget.existing?.dueDate ?? DateTime.now();
+  late TimeOfDay? _dueTime = widget.existing?.dueHour != null
       ? TimeOfDay(hour: widget.existing!.dueHour!, minute: widget.existing!.dueMinute!)
       : null;
   late bool _reminderEnabled = widget.existing?.reminderEnabled ?? false;
